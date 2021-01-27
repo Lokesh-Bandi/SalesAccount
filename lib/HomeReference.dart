@@ -46,7 +46,7 @@ class _HomeReferenceState extends State<HomeReference> {
                 child: GestureDetector(
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return ProductList();
+                      return ProductList(screenName: sareesList['$index']);
                     }));
                   },
                   child: Card(
