@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:e_commerce/DisplayCard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore: must_be_immutable
 class ProductList extends StatefulWidget {
@@ -11,16 +12,19 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  String productName = "Reebok casual wear for men and women by fort follies";
-  String offeredBy = "fort follies";
-  double offer = 40;
-  double oldPrice = 2599;
-  int price = ((40 / 100) * 2599).round();
-  int rating = 3;
+  String productId;
+  String productName;
+  String offeredBy ;
+  double offer ;
+  double oldPrice ;
+  int price ;
+  int rating ;
   String screenName;
+  var currentTime;
   String imageUrl =
       "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/193845/01/fnd/IND/fmt/png/Softride-Rift-Slip-On-Men's-Running-Shoes";
   List<String> reviews;
+  final _firestore = FirebaseFirestore.instance;
 
   _ProductListState(this.screenName);
 
@@ -37,25 +41,40 @@ class _ProductListState extends State<ProductList> {
             padding: const EdgeInsets.all(12.0),
             child: ListView(
               children: [
-                DisplayCard(
-                  productName: productName,
-                  offeredBy: offeredBy,
-                  price: price,
-                  offer: offer,
-                  oldPrice: oldPrice,
-                  rating: rating,
-                  imageUrl: imageUrl,
-                  reviews: reviews,
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(3, 5, 3, 5),
-                  height: 320,
-                  width: double.maxFinite,
-                  child: Card(
-                    elevation: 9,
-                  ),
+                StreamBuilder<QuerySnapshot>(
+                  stream: _firestore.collection('productDetails').orderBy('Time',descending: true).snapshots(),
+                  builder: (context, snapshot) {
+                    List<DisplayCard> displayCards = [];
+                    if (snapshot.hasData) {
+                      final displayData = snapshot.data.docs;
+                      for (var eachProduct in displayData) {
+                        productId=eachProduct.id;
+                        productName = eachProduct.get('Name');
+                        offeredBy = eachProduct.get('OfferedBy');
+                        price = eachProduct.get('Price');
+                        offer = eachProduct.get('Offer');
+                        oldPrice = eachProduct.get('OldPrice');
+                        imageUrl = eachProduct.get('imageUrls')[0];
+                        final displayCardWidget = DisplayCard(
+                          productId: productId,
+                          productName: productName,
+                          offeredBy: offeredBy,
+                          price: price,
+                          offer: offer,
+                          oldPrice: oldPrice,
+                          imageUrl: imageUrl,
+                        );
+                        displayCards.add(displayCardWidget);
+                      }
+                    }
+                      return Column(
+                          children: displayCards
+                      );
+                  },
                 ),
               ],
-            )));
+            )
+        )
+    );
   }
 }

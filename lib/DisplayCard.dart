@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:e_commerce/ProductDetails.dart';
 // ignore: must_be_immutable
 class DisplayCard extends StatelessWidget {
+  String productId;
   String productName;
   String offeredBy;
   int price;
   double offer;
   double oldPrice;
-  int rating;
   String imageUrl;
   List<String> reviews;
 
   DisplayCard(
       {Key key,
+        this.productId,
         this.productName,
         this.offeredBy,
         this.price,
         this.offer,
         this.oldPrice,
-        this.rating,
         this.imageUrl,
         this.reviews})
       : super(key: key);
@@ -44,7 +44,7 @@ class DisplayCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) {
-          return ProductDetails();
+          return ProductDetails(productId: this.productId,productName:this.productName);
         }));
       },
       child: Container(
@@ -55,11 +55,11 @@ class DisplayCard extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                flex: 1,
-                child: Container(
-                  height: 80,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    height: 80,
                     child: Wrap(children: [
                       Text(
                         productName,
@@ -71,16 +71,42 @@ class DisplayCard extends StatelessWidget {
                 ),
               ),
               Expanded(
-                flex: 4,
+                flex: 8,
                 child: Row(
                   children: [
                     Expanded(
                       flex: 3,
-                      child: Container(
-                        //width: 250,
-                        child: Image(
-                          fit: BoxFit.contain,
-                          image: NetworkImage(imageUrl),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+                        child: Container(
+                          child: Column(children: [
+                            Expanded(
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.fill,
+                                width: double.maxFinite,
+                                height: double.maxFinite,
+                                filterQuality: FilterQuality.medium,
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress
+                                          .expectedTotalBytes !=
+                                          null
+                                          ? loadingProgress
+                                          .cumulativeBytesLoaded /
+                                          loadingProgress
+                                              .expectedTotalBytes
+                                          : null,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ])
                         ),
                       ),
                     ),
@@ -129,16 +155,6 @@ class DisplayCard extends StatelessWidget {
                                     TextDecoration.lineThrough,
                                     color: Colors.redAccent,
                                     fontWeight: FontWeight.w300),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                ratingFunction(rating),
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                ),
                               ),
                             ),
                             Padding(

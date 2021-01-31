@@ -4,20 +4,32 @@ import 'package:flutter/painting.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/PhotoScreen/ImageViewer.dart';
 import 'package:e_commerce/Payment.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'DetailsTable.dart';
 class ProductDetails extends StatefulWidget {
+  String productId;
+  String productName;
   @override
-  _ProductDetailsState createState() => _ProductDetailsState();
+  ProductDetails({this.productId,this.productName});
+  _ProductDetailsState createState() => _ProductDetailsState(productId: productId,productName: productName);
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
+
+  String productId;
+  String productName;
+  List<dynamic> imageUrls=[];
+
+
   static const rowStyle=TextStyle(fontSize: 16,color: Colors.black);
   String title="Payment Easy";
   TextEditingController controller= TextEditingController();
-  List<String> url=["https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_1750,h_1750/global/193845/01/sv01/fnd/IND/fmt/png/Softride-Rift-Slip-On-Men's-Running-Shoes",
-    "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/193845/01/fnd/IND/fmt/png/Softride-Rift-Slip-On-Men's-Running-Shoes",
-    "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/193845/01/mod03/fnd/IND/fmt/png/Softride-Rift-Slip-On-Men's-Running-Shoes",
-    "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/193845/01/bv/fnd/IND/fmt/png/Softride-Rift-Slip-On-Men's-Running-Shoes",
-    "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/193845/01/sv04/fnd/IND/fmt/png/Softride-Rift-Slip-On-Men's-Running-Shoes"];
+
+  //Firebase variable
+  var _firestore=FirebaseFirestore.instance;
+
+  _ProductDetailsState({this.productId,this.productName});
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,174 +45,70 @@ class _ProductDetailsState extends State<ProductDetails> {
         child: ListView(
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 1,horizontal: 10),
-              child: Container(
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                        color:Colors.lightBlue[900] ,
-                        width: 7),
-                    borderRadius: BorderRadius.circular(15)
-                ),
-
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Center(
-                    child: Text(
-                      'Reebok casual wear for men and women',
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black87
-                      ),),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 1,horizontal: 10),
-              child: Container(
+              padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+              child: Card(
+                elevation: 9,
+                child: Container(
                   margin: EdgeInsets.all(5),
-                  height: 400,
-                  decoration: BoxDecoration(
-                      border:Border.all(
-                          color: Colors.lightBlue[900],
-                          width: 7
-                      ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)
-                  ),
-                  child: CarouselSlider(
-                    options:CarouselOptions(
-                      height: 380,
-                      aspectRatio: 0.25,
-                      autoPlayInterval:Duration(seconds: 15),
-                      enlargeCenterPage: true,
-                      scrollDirection: Axis.horizontal,
-                      autoPlay: true,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Center(
+                      child: Text(
+                        productName,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black87
+                        ),),
                     ),
-                    items:[
-                      GestureDetector  (
-                        onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (_){
-                            return HeroAnimation1(url: url[0]);
-                          }));
-                        },
-                        child:Image(
-                          image:NetworkImage(url[0]),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (_){
-                            return HeroAnimation1(url: url[1]);
-                          }));
-                        },
-                        child: Image(image: NetworkImage(url[1])),
-                      ),
-                      GestureDetector(
-                        onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (_){
-                            return HeroAnimation1(url: url[2]);
-                          }));
-                        },
-                        child: Image(image: NetworkImage(url[2])),
-                      ),
-                      GestureDetector(
-                        onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (_){
-                            return HeroAnimation1(url: url[3]);
-                          }));
-                        },
-                        child: Image(image: NetworkImage(url[3])),
-                      ),
-                      GestureDetector(
-                        onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (_){
-                            return HeroAnimation1(url: url[4]);
-                          }));
-                        },
-                        child: Image(image: NetworkImage(url[4])),
-                      )
-                    ],
-                  )
+                  ),
+                ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 1,horizontal: 10),
-              child: Container(
-                  margin: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                      border:Border.all(
-                          color: Colors.lightBlue[900],
-                          width: 7
+              child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('productDetails').snapshots(),
+              builder: (context,snapshot){
+                if(snapshot.hasData) {
+                  final productDetails = snapshot.data.docs;
+                    for (var eachDetail in productDetails) {
+                      if(eachDetail.id==productId)
+                        imageUrls=eachDetail.get('imageUrls');
+                    }
+                  }
+                return Card(
+                  elevation: 9,
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius:BorderRadius.circular(22)
                       ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)
+                      padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+                      margin: EdgeInsets.all(5),
+                      height: 400,
+                      child: CarouselSlider(
+                        options:CarouselOptions(
+                          height: 380,
+                          aspectRatio: 0.25,
+                          autoPlayInterval:Duration(seconds: 15),
+                          enlargeCenterPage: true,
+                          scrollDirection: Axis.horizontal,
+                          autoPlay: true,
+                        ),
+                        items:[
+                          for (var imageUrl in imageUrls)
+                            buildImageViewer(context,imageUrl),
+                        ],
+                      )
                   ),
-                  child: DataTable(
-                    dividerThickness: 2,
-                    columns: const <DataColumn>[
-                      DataColumn(
-                        label: Text(
-                          'Name',
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Description',
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                      ),
-                    ],
-                    rows: const <DataRow>[
-                      DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text('Product Name:',style: rowStyle)),
-                          DataCell(Text('Reebok casual wear for men and women',style: rowStyle)),
-                        ],
-                      ),
-                      DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text('Colour:',style: rowStyle,)),
-                          DataCell(Text('BlueGrey',style: rowStyle)),
-                        ],
-                      ),
-                      DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text('Size:',style: rowStyle)),
-                          DataCell(Text('9 [UK]',style: rowStyle)),
-                        ],
-                      ),
-                      DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text('Price:',style: rowStyle)),
-                          DataCell(Text('₹1099',style: rowStyle)),
-                        ],
-                      ),
-                      DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text('Rating:',style: rowStyle)),
-                          DataCell(Text('★★★★☆',style: rowStyle)),
-                        ],
-                      ),
-                      DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text('Offer:',style: rowStyle)),
-                          DataCell(Text('NO',style: rowStyle)),
-                        ],
-                      ),
-                    ],
-                  )
+                );
+                }
+
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 1,horizontal: 10),
+              child: DetailsTable(productId:productId,productName:productName),
             ),
             Container(
               margin: EdgeInsets.all(15),
@@ -227,4 +135,44 @@ class _ProductDetailsState extends State<ProductDetails> {
       ),
     );;
   }
+
+  GestureDetector buildImageViewer(BuildContext context,String imageUrl) {
+    return GestureDetector(
+                      onTap:(){
+                        Navigator.push(context, MaterialPageRoute(builder: (_){
+                          return HeroAnimation1(url: imageUrl);
+                        }));
+                      },
+                      child:Column(children: [
+                        Expanded(
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.fill,
+                            width: double.maxFinite,
+                            height: double.maxFinite,
+                            filterQuality: FilterQuality.high,
+                            loadingBuilder: (BuildContext context,
+                                Widget child,
+                                ImageChunkEvent loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress
+                                      .expectedTotalBytes !=
+                                      null
+                                      ? loadingProgress
+                                      .cumulativeBytesLoaded /
+                                      loadingProgress
+                                          .expectedTotalBytes
+                                      : null,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ])
+                    );
+  }
 }
+
+
