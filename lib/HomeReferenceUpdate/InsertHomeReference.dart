@@ -1,31 +1,51 @@
-import 'package:e_commerce/InsertDeleteHomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce/DataInsert.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:e_commerce/ImageWidgetConstants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 class InsertHomeReference extends StatefulWidget {
   @override
   _InsertHomeReferenceState createState() => _InsertHomeReferenceState();
 }
 
 class _InsertHomeReferenceState extends State<InsertHomeReference> {
-  String imageUrl;
-  var imageStatusSuccess = Icon(Icons.check, color: Colors.green, size: 30);
-  var imageStatusFail = Icon(Icons.clear, color: Colors.redAccent, size: 30);
-  var imageEmpty =Icon(Icons.add, color: Colors.black87, size: 30);
+
   bool isCamera;
   bool isLoading=false;
-  final _firestore = FirebaseFirestore.instance;
+
+  final firestore = FirebaseFirestore.instance;
+  final firebaseStorage = FirebaseStorage.instance;
   var uploadingTime;
+
   TextEditingController sareeTypeEditor= TextEditingController();
+  File file;
+   var resultIcon;
+  // ignore: non_constant_identifier_names
+
+  void initState(){
+    super.initState();
+    resultIcon=Constants.imageEmpty;
+  }
+  CropingImage(String image) async{
+    File _croppedImage= await ImageCropper.cropImage(
+        sourcePath: image,
+        aspectRatio: CropAspectRatio(ratioX: 1.0,ratioY: 1.25)
+    );
+    if(_croppedImage!=null){
+      setState(() {
+        file=_croppedImage;
+      });
+
+    }
+  }
 
   uploadImage() async {
-    final _firebaseStorage = FirebaseStorage.instance;
+
     final _imagePicker = ImagePicker();
     PickedFile image;
     //Check Permissions
@@ -37,17 +57,20 @@ class _InsertHomeReferenceState extends State<InsertHomeReference> {
       //Select Image
       if(isCamera) {
         image = await _imagePicker.getImage(source: ImageSource.camera, imageQuality: 25);
+        await CropingImage(image.path);
       }
-      else
-        image = await _imagePicker.getImage(source: ImageSource.gallery,imageQuality: 25);
-      var file = File(image.path);
+      else {
+        image = await _imagePicker.getImage(
+            source: ImageSource.gallery, imageQuality: 25);
+        await CropingImage(image.path);
+      }
       if (image != null) {
         //to start cicularprogressindicator
         setState(() {
           isLoading = true;
         });
         //Upload to Firebase
-        var snapshot = await _firebaseStorage
+        var snapshot = await firebaseStorage
             .ref()
             .child('SareeTypes/${Path.basename(file.path)}')
             .putFile(file);
@@ -55,11 +78,11 @@ class _InsertHomeReferenceState extends State<InsertHomeReference> {
         setState(() {
           if (downloadUrl.isNotEmpty) {
             isLoading=false;
-            imageUrl=downloadUrl;
-            imageEmpty= imageStatusSuccess;
+            Constants.imageUrl=downloadUrl;
+            resultIcon= Constants.imageStatusSuccess;
           }
           else
-            imageEmpty = imageStatusFail;
+            resultIcon= Constants.imageStatusFail;
         });
       } else {
         print('No Image Path Received');
@@ -80,20 +103,12 @@ class _InsertHomeReferenceState extends State<InsertHomeReference> {
               focusColor: Colors.grey,
               leading: GestureDetector(
                   onTap: () {
-                      if (imageEmpty !=
-                          imageStatusSuccess ) {
+                      if (Constants.imageEmpty !=
+                          Constants.imageStatusSuccess ) {
                         setState(() {
                           isCamera = true;
                           uploadImage();
                         });
-                    }
-                    else{
-                      if (imageEmpty != imageStatusSuccess) {
-                        setState(() {
-                          isCamera=true;
-                          uploadImage();
-                        });
-                      }
                     }
                   },
                   child: Icon(Icons.add_a_photo)),
@@ -103,23 +118,15 @@ class _InsertHomeReferenceState extends State<InsertHomeReference> {
               ),
               trailing: GestureDetector(
                   onTap: () {
-                      if (imageEmpty !=
-                          imageStatusSuccess ) {
+                      if (Constants.imageEmpty !=
+                          Constants.imageStatusSuccess ) {
                         setState(() {
                           isCamera = false;
                           uploadImage();
                         });
                     }
-                    else{
-                      if (imageEmpty != imageStatusSuccess) {
-                        setState(() {
-                          isCamera= false;
-                          uploadImage();
-                        });
-                      }
-                    }
                   },
-                  child: imageEmpty),
+                  child: resultIcon),
             ),
           ),
         ),
@@ -143,62 +150,78 @@ class _InsertHomeReferenceState extends State<InsertHomeReference> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: [
-          //Names
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Name of the saree type',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      body: Builder(
+        builder: (context)=>ListView(
+          scrollDirection: Axis.vertical,
+          children: [
+            //Names
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Name of the saree type',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                TextField(
-                  controller: sareeTypeEditor,
-                  textCapitalization: TextCapitalization.sentences,
-                  autocorrect: true,
-                  maxLines: 1,
-                  maxLength: 35,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(), hintText: "Saree type"),
-                ),
-              ],
-            ),
-          ),
-          buildImageUploadWidget(),
-          //Proceed button
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: (){
-                uploadingTime=DateTime.now();
-                if(sareeTypeEditor.text.isNotEmpty && imageUrl.isNotEmpty) {
-                  _firestore.collection('SareeTypes').add({
-                    'Saree Type': sareeTypeEditor.text,
-                    'ImageUrl': imageUrl
-                  }
-                  );
-                  Navigator.pop(context,true);
-                }
-
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [Colors.white,Colors.blueAccent]
-                    )
-                ),
-                child: Center(child: Text("Proceed",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)),
+                  TextField(
+                    controller: sareeTypeEditor,
+                    textCapitalization: TextCapitalization.sentences,
+                    autocorrect: true,
+                    maxLines: 1,
+                    maxLength: 35,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(), hintText: "Saree type"),
+                  ),
+                ],
               ),
             ),
-          )
-        ],
+            buildImageUploadWidget(),
+            //Proceed button
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: (){
+                  uploadingTime=DateTime.now();
+                  if(sareeTypeEditor.text.isNotEmpty && Constants.imageUrl.isNotEmpty) {
+                    firestore.collection('SareeTypes').add({
+                      'Saree Type': sareeTypeEditor.text,
+                      'ImageUrl': Constants.imageUrl
+                    }
+                    );
+                    Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.black87,
+                          content:Text('Successfully Saved',style: TextStyle(color: Colors.white70),),
+                          duration: Duration(seconds: 5),
+                          action: SnackBarAction(
+                            textColor: Colors.greenAccent,
+                            label: 'Back',
+                            onPressed: (){
+                             Navigator.pop(context);
+                            },
+                          ),
+
+                        )
+                    );
+                  }
+
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Colors.white,Colors.blueAccent]
+                      )
+                  ),
+                  child: Center(child: Text("Proceed",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
 
     );

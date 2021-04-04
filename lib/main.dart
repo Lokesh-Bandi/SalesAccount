@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:e_commerce/HomeReferenceUpdate/EditableHomeReference.dart';
 import 'package:e_commerce/LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:e_commerce/InsertDeleteHomePage.dart';
@@ -6,16 +7,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:e_commerce/HomeReference.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-bool alreadyVisited;
+import 'package:lottie/lottie.dart';
+
+bool alreadyVisited=false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SharedPreferences prefs= await SharedPreferences.getInstance();
   alreadyVisited=prefs.getBool('alreadyVisited');
-  runApp(MaterialApp(home: SafeArea(child: (alreadyVisited)?(HomePage()):(LoginScreen()))));
+  runApp(MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primarySwatch: Colors.teal,
+        secondaryHeaderColor: Colors.blue
+      ),
+      home: SafeArea(child: (alreadyVisited!=null)?(HomePage()):(LoginScreen())))
+  );
 }
 class CheckInternet {
   StreamSubscription<DataConnectionStatus> listener;
@@ -83,52 +92,54 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-            backgroundColor: Colors.black87,
+            backgroundColor: Theme.of(context).primaryColor,
             title: Text(
               "Home",
               style: TextStyle(color: Colors.white),
             )),
-        body: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: ListView(
-              children: [
-                SizedBox(
-                  height: 50,
-                  width: double.maxFinite,
-                  child: RaisedButton(
-                    onPressed: (){
+        body: Builder(
+          builder: (context)=>Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: 50,
+                    width: double.maxFinite,
+                    child: RaisedButton(
+                      onPressed: (){
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return HomeReference();
                         }));
                       },
-                    child: Text("Click"),
+                      child: Text("Click"),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 50,
-                  width: double.maxFinite,
-                  child: RaisedButton(
-                    onPressed: (){
-                     //server.start();
-                      Navigator.push(context, MaterialPageRoute(builder: (_){
-                        return InsertDeleteHomePage();
-                      }));
-                    },
-                    child: Text("Insertion"),
+                  SizedBox(
+                    height: 50,
+                    width: double.maxFinite,
+                    child: RaisedButton(
+                      onPressed: (){
+                        //server.start();
+                        Navigator.push(context, MaterialPageRoute(builder: (_){
+                          return InsertDeleteHomePage();
+                        }));
+                      },
+                      child: Text("Insertion"),
+                    ),
                   ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(3, 5, 3, 5),
-                  height: 320,
-                  width: double.maxFinite,
-                  child: Card(
-                    elevation: 9,
+                  Container(
+                    padding: EdgeInsets.fromLTRB(3, 5, 3, 5),
+                    height: 320,
+                    width: double.maxFinite,
+                    child: Card(
+                      elevation: 9,
+                    ),
                   ),
-                ),
-              ],
-            )
-        )
-    );
+                ],
+              )
+          )
+          ,
+        )    );
   }
 }
 

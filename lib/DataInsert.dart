@@ -6,6 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce/ImageWidgetConstants.dart';
+
 
 class DataInsert extends StatefulWidget {
   @override
@@ -23,16 +25,15 @@ class _DataInsertState extends State<DataInsert> {
   TextEditingController blouseColorEditor=TextEditingController();
   TextEditingController priceEditor=TextEditingController();
   TextEditingController oldPriceEditor=TextEditingController();
-  var imageStatusSuccess = Icon(Icons.check, color: Colors.green, size: 30);
-  var imageStatusFail = Icon(Icons.clear, color: Colors.redAccent, size: 30);
+
 
   //For four images
   List<String> imageUrls =[];
   List<Icon> imageEmpty = [
-    Icon(Icons.add, color: Colors.black87, size: 30),
-    Icon(Icons.add, color: Colors.black87, size: 30),
-    Icon(Icons.add, color: Colors.black87, size: 30),
-    Icon(Icons.add, color: Colors.black87, size: 30)
+    Constants.imageEmpty,
+    Constants.imageEmpty,
+    Constants.imageEmpty,
+    Constants.imageEmpty,
   ];
   List<bool> isCamera=new List(4);
   List<bool> isLoading=[false,false,false,false];
@@ -74,10 +75,10 @@ class _DataInsertState extends State<DataInsert> {
           if (downloadUrl.isNotEmpty) {
             isLoading[imageNumber]=false;
             imageUrls.add(downloadUrl);
-            imageEmpty[imageNumber] = imageStatusSuccess;
+            imageEmpty[imageNumber] = Constants.imageStatusSuccess;
           }
           else
-            imageEmpty[imageNumber] = imageStatusFail;
+            imageEmpty[imageNumber] = Constants.imageStatusFail;
         });
       } else {
         print('No Image Path Received');
@@ -410,6 +411,8 @@ class _DataInsertState extends State<DataInsert> {
                 }
                 );
 
+                Navigator.pop(context);
+
               },
               child: Container(
                 height: 50,
@@ -440,9 +443,9 @@ class _DataInsertState extends State<DataInsert> {
                       onTap: () {
                         if(imageNumber>1) {
                           if (imageEmpty[imageNumber - 1] !=
-                              imageStatusSuccess &&
+                              Constants.imageStatusSuccess &&
                               imageEmpty[imageNumber - 2] ==
-                                  imageStatusSuccess) {
+                                  Constants.imageStatusSuccess) {
                             setState(() {
                               isCamera[imageNumber - 1] = true;
                               uploadImage(imageNumber - 1);
@@ -450,7 +453,7 @@ class _DataInsertState extends State<DataInsert> {
                           }
                         }
                         else{
-                          if (imageEmpty[imageNumber-1] != imageStatusSuccess) {
+                          if (imageEmpty[imageNumber-1] != Constants.imageStatusSuccess) {
                             setState(() {
                               isCamera[imageNumber-1]=true;
                               uploadImage(imageNumber-1);
@@ -467,9 +470,9 @@ class _DataInsertState extends State<DataInsert> {
                       onTap: () {
                         if(imageNumber>1) {
                           if (imageEmpty[imageNumber - 1] !=
-                              imageStatusSuccess &&
+                              Constants.imageStatusSuccess &&
                               imageEmpty[imageNumber - 2] ==
-                                  imageStatusSuccess) {
+                                  Constants.imageStatusSuccess) {
                             setState(() {
                               isCamera[imageNumber - 1] = false;
                               uploadImage(imageNumber - 1);
@@ -477,7 +480,7 @@ class _DataInsertState extends State<DataInsert> {
                           }
                         }
                         else{
-                          if (imageEmpty[imageNumber-1] != imageStatusSuccess) {
+                          if (imageEmpty[imageNumber-1] != Constants.imageStatusSuccess) {
                             setState(() {
                               isCamera[imageNumber-1]= false;
                               uploadImage(imageNumber-1);
@@ -498,3 +501,4 @@ class _DataInsertState extends State<DataInsert> {
         );
   }
 }
+

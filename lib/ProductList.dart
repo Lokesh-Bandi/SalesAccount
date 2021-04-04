@@ -21,8 +21,7 @@ class _ProductListState extends State<ProductList> {
   int rating ;
   String screenName;
   var currentTime;
-  String imageUrl =
-      "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/193845/01/fnd/IND/fmt/png/Softride-Rift-Slip-On-Men's-Running-Shoes";
+  String imageUrl = '';
   List<String> reviews;
   final _firestore = FirebaseFirestore.instance;
 
@@ -32,7 +31,7 @@ class _ProductListState extends State<ProductList> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-            backgroundColor: Colors.black87,
+            backgroundColor: Theme.of(context).primaryColor,
             title: Text(
               screenName,
               style: TextStyle(color: Colors.white),

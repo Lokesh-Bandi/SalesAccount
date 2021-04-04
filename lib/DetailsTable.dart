@@ -42,7 +42,11 @@ class DetailsTable extends StatelessWidget {
           }
         }
         return Card(
-          elevation: 15,
+          shadowColor: Colors.lightBlueAccent,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(22)
+          ),
+          elevation: 9,
           child: Container(
             padding: EdgeInsets.all(12),
             margin: EdgeInsets.all(5),
@@ -97,19 +101,19 @@ class DetailsTable extends StatelessWidget {
                   DataRow(
                     cells: <DataCell>[
                       DataCell(Text('Price:',style: rowStyle)),
-                      DataCell(Text(price.toString(),style: rowStyle)),
+                      DataCell(Text('₹ '+ price.toString(),style: TextStyle(fontSize: 16,color: Colors.green,fontWeight: FontWeight.bold))),
                     ],
                   ),
                   DataRow(
                     cells: <DataCell>[
                       DataCell(Text('Offer in % :',style: rowStyle)),
-                      DataCell(Text(offer.toString()+' %',style: rowStyle)),
+                      DataCell(Text(offer.toString()+' %',style:TextStyle(fontSize: 16,color: Colors.blueAccent,fontWeight: FontWeight.bold) )),
                     ],
                   ),
                   DataRow(
                     cells: <DataCell>[
                       DataCell(Text('Actual Price:',style: rowStyle,)),
-                      DataCell(Text(oldPrice.toString(),style: rowStyle)),
+                      DataCell(Text('₹ '+oldPrice.toString(),style: TextStyle(fontSize: 16,color: Colors.redAccent,fontWeight: FontWeight.bold))),
                     ],
                   ),
                   DataRow(
