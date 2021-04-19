@@ -55,10 +55,10 @@ class _DataInsertState extends State<DataInsert> {
     if (permissionStatus.isGranted) {
       //Select Image
       if(isCamera[imageNumber]) {
-        image = await _imagePicker.getImage(source: ImageSource.camera, imageQuality: 25);
+        image = await _imagePicker.getImage(source: ImageSource.camera, imageQuality: 50);
       }
       else
-        image = await _imagePicker.getImage(source: ImageSource.gallery,imageQuality: 25);
+        image = await _imagePicker.getImage(source: ImageSource.gallery,imageQuality: 100);
       var file = File(image.path);
       if (image != null) {
         //to start cicularprogressindicator

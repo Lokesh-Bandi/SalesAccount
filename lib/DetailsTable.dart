@@ -64,14 +64,15 @@ class DetailsTable extends StatelessWidget {
                 dividerThickness: 2,
                 columns: <DataColumn>[
                   DataColumn(
-                    label: Container(
-                      width: 120,
-                      child: Text(
-                        'Name',
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                    label: Expanded(
+                      child: Container(
+                        child: Text(
+                          'Name',
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
                       ),
                     ),
                   ),

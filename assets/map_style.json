@@ -1,0 +1,14 @@
+[
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#ea0b7a"
+      },
+      {
+        "weight": 2
+      }
+    ]
+  }
+]

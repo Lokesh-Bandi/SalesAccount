@@ -56,12 +56,12 @@ class _InsertHomeReferenceState extends State<InsertHomeReference> {
     if (permissionStatus.isGranted) {
       //Select Image
       if(isCamera) {
-        image = await _imagePicker.getImage(source: ImageSource.camera, imageQuality: 25);
+        image = await _imagePicker.getImage(source: ImageSource.camera, imageQuality: 50);
         await CropingImage(image.path);
       }
       else {
         image = await _imagePicker.getImage(
-            source: ImageSource.gallery, imageQuality: 25);
+            source: ImageSource.gallery, imageQuality: 100);
         await CropingImage(image.path);
       }
       if (image != null) {

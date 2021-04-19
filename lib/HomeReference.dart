@@ -1,10 +1,14 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:e_commerce/LoginScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:e_commerce/ProductList.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce/GoogleMaps.dart';
+import 'package:e_commerce/CurrentPosition.dart';
+import 'package:badges/badges.dart';
 
 class HomeReference extends StatefulWidget {
   @override
@@ -17,13 +21,18 @@ class _HomeReferenceState extends State<HomeReference> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   bool isLoading;
 
+  var deliveryAddress;
+
+
   void initState() {
     super.initState();
     sareeList = [];
+
     setState(() {
       isLoading = true;
     });
     getSareeTypes();
+    getPosition();
   }
 
   //getting data from firebase
@@ -43,7 +52,11 @@ class _HomeReferenceState extends State<HomeReference> {
       }
     }
   }
-
+  void getPosition() async{
+    CurrentPosition position=CurrentPosition() ;
+    deliveryAddress=await position.determinePosition();
+    setState(() {});
+  }
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
@@ -176,83 +189,143 @@ class _HomeReferenceState extends State<HomeReference> {
             title: Text(
               "HomeReference",
               style: TextStyle(color: Colors.white),
-            )),
-        body: GridView.builder(
-          itemCount: sareeList.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 8.0 / 12.0,
-            crossAxisCount: 2,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
-                padding: EdgeInsets.all(10),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return ProductList(screenName: sareeList[index].name);
-                    }));
-                  },
-                  child: Card(
-                      shadowColor:(index%3==0) ?Colors.pinkAccent:((index%3==1?Colors.deepPurpleAccent:Colors.yellowAccent)),
-                      elevation: 9,
-                      semanticContainer: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+            ),
+            actions: [
+              IconButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return SimpleMap();
+                  }));
+                },
+                tooltip: 'Current Location',
+                icon:Icon(CupertinoIcons.location)
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              flex: 1,
+                child:Center(
+                  child: Container(
+                    height: 35,
+                    child: Badge(
+                      elevation: 7,
+                      toAnimate: false,
+                      shape: BadgeShape.square,
+                      badgeColor: Color(0xfff4deee),
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(25),
+                          bottomLeft: Radius.circular(25)
                       ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              width: double.maxFinite,
-                              child: Column(children: [
+                      badgeContent: Center(
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            Text(
+                                'Delivery Address : ',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.black54
+                                )
+                            ),
+                            Text(
+                                deliveryAddress??'Loading...',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.black54
+                                )
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ),
+                )
+            ),
+            Expanded(
+              flex: 20,
+              child: GridView.builder(
+                itemCount: sareeList.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 8.0 / 12.0,
+                  crossAxisCount: 2,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                      padding: EdgeInsets.all(10),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) {
+                            return ProductList(screenName: sareeList[index].name);
+                          }));
+                        },
+                        child: Card(
+                            shadowColor:(index%3==0) ?Colors.pinkAccent:((index%3==1?Colors.deepPurpleAccent:Colors.yellowAccent)),
+                            elevation: 9,
+                            semanticContainer: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
                                 Expanded(
-                                  child: CachedNetworkImage(
-                                    imageUrl: sareeList[index].imageUrl,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.fill,
+                                  child: Container(
+                                    width: double.maxFinite,
+                                    child: Column(children: [
+                                      Expanded(
+                                        child: CachedNetworkImage(
+                                          imageUrl: sareeList[index].imageUrl,
+                                          imageBuilder: (context, imageProvider) =>
+                                              Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) => Center(
+                                              child: CircularProgressIndicator()),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
                                         ),
                                       ),
-                                    ),
-                                    placeholder: (context, url) => Center(
-                                        child: CircularProgressIndicator()),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
+                                    ]),
                                   ),
                                 ),
-                              ]),
-                            ),
-                          ),
-                          Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Text(
-                                sareeList[index].name,
-                                style: TextStyle(
-                                    fontSize: 16.0, fontFamily: 'YuseiMagic',fontWeight: FontWeight.bold),
-                              )),
-                          Padding(
-                              padding: EdgeInsets.only(bottom: 8),
-                              child: Center(
-                                child: Text(
-                                  'View all  >',
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontFamily: 'Lemonada',
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
-                                  ),
-                                ),
-                              ))
-                        ],
-                      )),
-                ));
-          },
+                                Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Text(
+                                      sareeList[index].name,
+                                      style: TextStyle(
+                                          fontSize: 16.0, fontFamily: 'YuseiMagic',fontWeight: FontWeight.bold),
+                                    )),
+                                Padding(
+                                    padding: EdgeInsets.only(bottom: 8),
+                                    child: Center(
+                                      child: Text(
+                                        'View all  >',
+                                        style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          fontFamily: 'Lemonada',
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent,
+                                        ),
+                                      ),
+                                    ))
+                              ],
+                            )),
+                      ));
+                },
+              ),
+            ),
+          ],
         ));
   }
 }

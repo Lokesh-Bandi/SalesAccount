@@ -328,7 +328,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 child: RaisedButton(
                     onPressed:(){
                       Navigator.push(context,MaterialPageRoute(builder: (_){
-                        return PaymentScreen();
+                        return PaymentScreen(productId: productId,productName: productName,price: price,);
                       }));
                     },
                     color: Colors.lightBlue[900],

@@ -21,7 +21,8 @@ Future<void> main() async {
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.teal,
-        secondaryHeaderColor: Colors.blue
+        secondaryHeaderColor: Colors.blue,
+          primaryColor: Color(0xfffca9e4)
       ),
       home: SafeArea(child: (alreadyVisited!=null)?(HomePage()):(LoginScreen())))
   );

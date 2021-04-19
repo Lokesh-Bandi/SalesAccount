@@ -1,19 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:e_commerce/DetailsTable.dart';
+import 'package:badges/badges.dart';
 class PaymentScreen extends StatefulWidget {
-  @override
-  _PaymentScreenState createState() => _PaymentScreenState();
+  String productId;
+  String productName;
+  int price;
+  PaymentScreen({this.productId,this.productName,this.price});
+  _PaymentScreenState createState() => _PaymentScreenState(productId: productId,productName: productName,price:price);
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  String productId;
+  String productName;
+  int price;
+  _PaymentScreenState({this.productId,this.productName,this.price});
   @override
   Razorpay razorpay=Razorpay();
-  static const rowStyle=TextStyle(fontSize: 16,color: Colors.black);
   TextEditingController controller= TextEditingController();
+  static const rowStyle=TextStyle(fontSize: 16,color: Colors.black);
   // ignore: must_call_super
   void initState(){
     super.initState();
+    controller.text=price.toString();
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,handlerSuccess);
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,handlerWallet);
     razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,handlerError);
@@ -25,7 +36,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void openCheckOut(){
     var options={
       'key':'rzp_test_gjA9z87B9iEVa6',
-      'amount': double.parse(controller.text)*100,
+      'amount': double.parse(price.toString())*100,
       'name':'Bandi Lokesh',
       'Description': 'Money payment to Silicon',
       'prefill':{
@@ -52,94 +63,68 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
       body: ListView(
         children: [
+          //product summary
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+            padding: const EdgeInsets.symmetric(
+                vertical: 5, horizontal: 5),
             child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color:Colors.black45,style: BorderStyle.solid)
+              height:50,
+              child: Badge(
+                elevation: 7,
+                toAnimate: false,
+                shape: BadgeShape.square,
+                badgeColor: Colors.deepPurple,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(25),
+                    topLeft: Radius.circular(25)
                 ),
-              child: DataTable(
-                dividerThickness: 2,
-                columns: const <DataColumn>[
-                  DataColumn(
-                    label: Text(
-                      'Name',
+                badgeContent: Center(
+                  child:
+                  Text(
+                      'Your Product Summary',
                       style: TextStyle(
-                          color: Colors.black87,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
+                          fontSize: 20,
+                          color: Colors.white
+                      )
                   ),
-                  DataColumn(
-                    label: Text(
-                      'Description',
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
-                  ),
-                ],
-                rows: const <DataRow>[
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Product Name:',style: rowStyle)),
-                      DataCell(Text('Reebok casual wear for men and women',style: rowStyle)),
-                    ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Colour:',style: rowStyle,)),
-                      DataCell(Text('BlueGrey',style: rowStyle)),
-                    ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Size:',style: rowStyle)),
-                      DataCell(Text('9 [UK]',style: rowStyle)),
-                    ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Price:',style: rowStyle)),
-                      DataCell(Text('₹1099',style: rowStyle)),
-                    ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Rating:',style: rowStyle)),
-                      DataCell(Text('★★★★☆',style: rowStyle)),
-                    ],
-                  ),
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text('Offer:',style: rowStyle)),
-                      DataCell(Text('NO',style: rowStyle)),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
+          //product details
+          DetailsTable(productId: productId,productName: productName,),
+          //amount field
           Padding(
             padding: EdgeInsets.symmetric(vertical: 5,horizontal:10),
             child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(30),
-                  child: TextField(
-                    controller: controller ,
+                  child: TextFormField(
+                    controller: controller,
+                    enabled: false,
                     textAlign: TextAlign.justify,
-                    keyboardType: TextInputType.number,
                     style:TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 22
                     ),
                     decoration: InputDecoration(
-                        focusColor: Colors.redAccent,
-                        fillColor: Colors.white,
+                      labelText:'Product Price',
                         hintText: "Enter the amount",
-                        prefixIcon: Icon(Icons.rate_review),
-                        border: OutlineInputBorder()
+                        prefixText: 'Total Amount : ₹  ',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.lightBlueAccent, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.lightBlueAccent, width: 2.0),
+                        borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                      ),
                     ),
                   ),
                 )

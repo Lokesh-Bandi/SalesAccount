@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/ProductDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce/MyBag.dart';
 // ignore: must_be_immutable
-class DisplayCard extends StatelessWidget {
+class DisplayCard extends StatefulWidget {
   String productId;
   String productName;
   String offeredBy;
@@ -11,6 +13,7 @@ class DisplayCard extends StatelessWidget {
   double oldPrice;
   String imageUrl;
   List<String> reviews;
+
 
   DisplayCard(
       {Key key,
@@ -23,6 +26,17 @@ class DisplayCard extends StatelessWidget {
         this.imageUrl,
         this.reviews})
       : super(key: key);
+
+  @override
+  _DisplayCardState createState() => _DisplayCardState();
+}
+
+class _DisplayCardState extends State<DisplayCard> {
+  var unsaved=Icon(CupertinoIcons.heart);
+
+  var saved=Icon(CupertinoIcons.heart_fill);
+
+  var isSaved=false;
 
   String ratingFunction(int rating) {
     String full = "★";
@@ -47,7 +61,7 @@ class DisplayCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) {
-            return ProductDetails(productId: this.productId,productName:this.productName);
+            return ProductDetails(productId: this.widget.productId,productName:this.widget.productName);
           }));
         },
         child: Card(
@@ -69,7 +83,7 @@ class DisplayCard extends StatelessWidget {
                     child: Container(
                       child: Wrap(children: [
                         Text(
-                          productName,
+                          widget.productName,
                           style: TextStyle(
                               fontSize: 17, fontWeight: FontWeight.bold,fontFamily: 'YuseiMagic'),
                         ),
@@ -89,7 +103,7 @@ class DisplayCard extends StatelessWidget {
                             child: Column(children: [
                               Expanded(
                                 child: CachedNetworkImage(
-                                  imageUrl: imageUrl,
+                                  imageUrl: widget.imageUrl,
                                   imageBuilder: (context, imageProvider) => Container(
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
@@ -115,7 +129,7 @@ class DisplayCard extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  "By "+offeredBy,
+                                  "By "+widget.offeredBy,
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.black,fontFamily: 'EBGaramond'),
                                 ),
@@ -123,7 +137,7 @@ class DisplayCard extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  "₹$price",
+                                  "₹${widget.price}",
                                   style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.green,
@@ -133,7 +147,7 @@ class DisplayCard extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical:5.0,horizontal: 1),
                                 child: Text(
-                                  "OFFER $offer%",
+                                  "OFFER ${widget.offer}%",
                                   style: TextStyle(
                                       fontSize: 13,
                                       decoration: TextDecoration.underline,
@@ -144,7 +158,7 @@ class DisplayCard extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical:5.0,horizontal: 1),
                                 child: Text(
-                                  "₹$oldPrice",
+                                  "₹${widget.oldPrice}",
                                   style: TextStyle(
                                       fontSize: 13,
                                       decoration: TextDecoration.lineThrough,
@@ -152,9 +166,9 @@ class DisplayCard extends StatelessWidget {
                                       fontWeight: FontWeight.w300),
                                 ),
                               ),
-                              SizedBox(
-                                height: 28
-                              ),
+                              // SizedBox(
+                              //   height: 28
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -169,6 +183,19 @@ class DisplayCard extends StatelessWidget {
                                       decoration: TextDecoration.underline),
                                 ),
                               ),
+                              IconButton(
+                                  icon: isSaved?saved:unsaved,
+                                  onPressed:(){
+                                      setState(() {
+                                        if (isSaved==true){
+                                          isSaved=false;
+                                        }
+                                        else{
+                                          isSaved=true;
+
+                                        }
+                                      });
+                              })
                             ],
                           ),
                         ),
