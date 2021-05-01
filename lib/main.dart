@@ -12,6 +12,25 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:lottie/lottie.dart';
 
 bool alreadyVisited=false;
+
+Map<int, Color> color =
+{
+  50:Color.fromRGBO(136,14,79, .1),
+  100:Color.fromRGBO(136,14,79, .2),
+  200:Color.fromRGBO(136,14,79, .3),
+  300:Color.fromRGBO(136,14,79, .4),
+  400:Color.fromRGBO(136,14,79, .5),
+  500:Color.fromRGBO(136,14,79, .6),
+  600:Color.fromRGBO(136,14,79, .7),
+  700:Color.fromRGBO(136,14,79, .8),
+  800:Color.fromRGBO(136,14,79, .9),
+  900:Color.fromRGBO(136,14,79, 1),
+};
+
+MaterialColor drawerColor=MaterialColor(0xfffca9e4,color);
+
+bool isOpen=false;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -20,18 +39,21 @@ Future<void> main() async {
   runApp(MaterialApp(
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.teal,
+        primarySwatch: drawerColor,
         secondaryHeaderColor: Colors.blue,
           primaryColor: Color(0xfffca9e4)
       ),
       home: SafeArea(child: (alreadyVisited!=null)?(HomePage()):(LoginScreen())))
   );
 }
+
 class CheckInternet {
   StreamSubscription<DataConnectionStatus> listener;
   var internetStatus ;
   var contentMessage ;
   bool ourStatus;
+
+
   checkConnection(BuildContext context) async {
     listener = DataConnectionChecker().onStatusChange.listen((status) {
       switch (status) {
@@ -39,13 +61,14 @@ class CheckInternet {
           internetStatus = "You are Connected";
           contentMessage = Image.asset("Images/hasInternet.gif",width: 60,height: 60,);
           ourStatus=true;
-          _showDialog(internetStatus, contentMessage,ourStatus, context);
           break;
         case DataConnectionStatus.disconnected:
           internetStatus = "You are disconnected to the Internet. ";
           contentMessage = Image.asset("Images/noInternet.gif",width: 60,height: 60,);
           ourStatus=false;
-          _showDialog(internetStatus, contentMessage,ourStatus, context);
+          if(isOpen==false) {
+            _showDialog(internetStatus, contentMessage, ourStatus, context);
+          }
           break;
       }
     });
@@ -53,6 +76,7 @@ class CheckInternet {
   }
 
   void _showDialog(String title, Image content,bool outStatus, BuildContext context) {
+    isOpen=true;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -78,6 +102,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
 
   void initState(){
     super.initState();
@@ -144,4 +169,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// ignore: must_be_immutable
+// ignore: must_be_immutab
