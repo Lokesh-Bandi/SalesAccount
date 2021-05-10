@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:e_commerce/DisplayCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loading_animations/loading_animations.dart';
 
 // ignore: must_be_immutable
 class ProductList extends StatefulWidget {
@@ -27,6 +28,55 @@ class _ProductListState extends State<ProductList> {
 
   _ProductListState(this.screenName);
 
+  bool isLoading=true;
+
+  var productList;
+
+  // ignore: must_call_super
+   void initState() {
+    isLoading=true;
+
+    Future.delayed(Duration( seconds: 2),(){
+      setState(() {
+        isLoading=false;
+      });
+    });
+
+    setState(() {
+    productList=  StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('productDetails').orderBy('Time',descending: true).snapshots(),
+        builder: (context, snapshot) {
+          List<DisplayCard> displayCards=[];
+          if (snapshot.hasData) {
+            final displayData = snapshot.data.docs;
+            for (var eachProduct in displayData) {
+              productId = eachProduct.id;
+              productName = eachProduct.get('Name');
+              offeredBy = eachProduct.get('OfferedBy');
+              price = eachProduct.get('Price');
+              offer = eachProduct.get('Offer');
+              oldPrice = eachProduct.get('OldPrice');
+              imageUrl = eachProduct.get('imageUrls')[0];
+              final displayCardWidget = DisplayCard(
+                productId: productId,
+                productName: productName,
+                offeredBy: offeredBy,
+                price: price,
+                offer: offer,
+                oldPrice: oldPrice,
+                imageUrl: imageUrl,
+              );
+              displayCards.add(displayCardWidget);
+            }
+          }
+          return Column(
+            children: displayCards,
+          );
+        }
+    );
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
@@ -38,39 +88,16 @@ class _ProductListState extends State<ProductList> {
             )),
         body: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: ListView(
+            child: isLoading? Center(
+              child: LoadingBouncingGrid.circle(
+                size: 70,
+                backgroundColor: Color(0xfffca9e4),
+                borderSize: 10,
+              ),
+            ): ListView(
+              shrinkWrap: true,
               children: [
-                StreamBuilder<QuerySnapshot>(
-                  stream: _firestore.collection('productDetails').orderBy('Time',descending: true).snapshots(),
-                  builder: (context, snapshot) {
-                    List<DisplayCard> displayCards = [];
-                    if (snapshot.hasData) {
-                      final displayData = snapshot.data.docs;
-                      for (var eachProduct in displayData) {
-                        productId=eachProduct.id;
-                        productName = eachProduct.get('Name');
-                        offeredBy = eachProduct.get('OfferedBy');
-                        price = eachProduct.get('Price');
-                        offer = eachProduct.get('Offer');
-                        oldPrice = eachProduct.get('OldPrice');
-                        imageUrl = eachProduct.get('imageUrls')[0];
-                        final displayCardWidget = DisplayCard(
-                          productId: productId,
-                          productName: productName,
-                          offeredBy: offeredBy,
-                          price: price,
-                          offer: offer,
-                          oldPrice: oldPrice,
-                          imageUrl: imageUrl,
-                        );
-                        displayCards.add(displayCardWidget);
-                      }
-                    }
-                      return Column(
-                          children: displayCards
-                      );
-                  },
-                ),
+                  productList??Text('Loading')
               ],
             )
         )

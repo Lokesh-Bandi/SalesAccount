@@ -11,6 +11,7 @@ import 'package:e_commerce/CurrentPosition.dart';
 import 'package:badges/badges.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:loading_animations/loading_animations.dart';
 
 class HomeReference extends StatefulWidget {
   @override
@@ -652,7 +653,11 @@ class _HomeReferenceState extends State<HomeReference> {
                                               ),
                                               placeholder: (context, url) => Center(
                                                   child:
-                                                      CircularProgressIndicator()),
+                                                      LoadingFlipping.square(
+                                                        borderColor: Color(0xfffca9e4),
+                                                        size: 30.0,
+                                                        backgroundColor: Color(0xfffca9e4),
+                                                      )),
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),

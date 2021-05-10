@@ -8,6 +8,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:badges/badges.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
+import 'package:loading_animations/loading_animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+
 
 import 'DetailsTable.dart';
 class ProductDetails extends StatefulWidget {
@@ -346,20 +350,38 @@ class _ProductDetailsState extends State<ProductDetails> {
     );;
   }
 
-  GestureDetector buildImageViewer(BuildContext context,String imageUrl) {
-    return GestureDetector(
-                      onTap:(){
-                        Navigator.push(context, MaterialPageRoute(builder: (_){
-                          return HeroAnimation1(url: imageUrl);
-                        }));
-                      },
-                      child:Container(
-                        child: FadeInImage.memoryNetwork(
-                          placeholder: kTransparentImage,
-                          image: imageUrl,
-                        )
-                        ),
-                    );
+  Container buildImageViewer(BuildContext context,String imageUrl) {
+    return Container(
+      child:CachedNetworkImage(
+        imageUrl: imageUrl,
+        imageBuilder:
+            (context, imageProvider) =>
+            GestureDetector(
+              onTap:(){
+                Navigator.push(context, MaterialPageRoute(builder: (_){
+                  return HeroAnimation1(url: imageUrl);
+                }));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                  ),
+                ),
+              ),
+            ),
+        placeholder: (context, url) => Center(
+            child:
+            LoadingBouncingGrid.square(
+              borderColor: Color(0xfffca9e4),
+              size: 30.0,
+              backgroundColor: Color(0xfffca9e4),
+            )),
+        errorWidget:
+            (context, url, error) =>
+            Icon(Icons.error),
+      )
+      );
   }
 }
 

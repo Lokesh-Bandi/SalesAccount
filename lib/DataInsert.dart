@@ -16,8 +16,8 @@ class DataInsert extends StatefulWidget {
 
 class _DataInsertState extends State<DataInsert> {
   double offer;
-  String sareeType;
-  String clothType;
+  String fabric;
+  String catalog;
   TextEditingController productNameEditor=TextEditingController();
   TextEditingController offeredByEditor=TextEditingController();
   TextEditingController offerEditor=TextEditingController();
@@ -294,21 +294,23 @@ class _DataInsertState extends State<DataInsert> {
                   underline: Container(color:Colors.grey[900], height:2.0,),
                   iconSize: 25,
                   focusColor:Colors.grey,
-                  value: sareeType,
+                  value: fabric,
                   elevation: 5,
                   style: TextStyle(color: Colors.white),
                   iconEnabledColor:Colors.black,
                   items: <String>[
-                    'Party Wear',
-                    'Full Design',
-                    'Printed',
-                    'Catalogue',
-                    'Fancy',
-                    'Georgette',
                     'Chiffon',
-                    'Casual Wear',
-                    'Silk',
-                    'Wedding'
+                    'Chiffon Butti',
+                    'Georgette',
+                    'Jugnu Silk',
+                    'Jute Georgette',
+                    'Brasso',
+                    'Jacquard',
+                    'Satin Silk',
+                    'Silk Taspa',
+                    'Chilli Crepe',
+                    'Jute',
+
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -321,7 +323,7 @@ class _DataInsertState extends State<DataInsert> {
                     );
                   }).toList(),
                   hint:Text(
-                    "Choose a saree type",
+                    "Choose a Fabric",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 17,
@@ -329,7 +331,7 @@ class _DataInsertState extends State<DataInsert> {
                   ),
                   onChanged: (String value) {
                     setState(() {
-                      sareeType = value;
+                      fabric = value;
                     });
                   },
                 ),
@@ -344,20 +346,23 @@ class _DataInsertState extends State<DataInsert> {
                   underline: Container(color:Colors.grey[900], height:2.0,),
                   iconSize: 25,
                   focusColor:Colors.grey,
-                  value: clothType,
+                  value: catalog,
                   elevation: 5,
                   style: TextStyle(color: Colors.white),
                   iconEnabledColor:Colors.black,
                   items: <String>[
-                    'Cotton',
-                    'Pure cotton',
-                    'Silk',
-                    'Net',
-                    'Crepe',
-                    'Benaurus',
-                    'seko',
-                    'Gadwal',
-                    'Tassaur'
+                    'Rasbhari',
+                    'Mayuri',
+                    'Lahar',
+                    'Hum Dum',
+                    'Tara',
+                    'Blue Laskara',
+                    'Neemli',
+                    'Morbangadi',
+                    'Superhit Printed',
+                    'Garba Printed',
+                    'Worked Collections'
+
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -370,7 +375,7 @@ class _DataInsertState extends State<DataInsert> {
                     );
                   }).toList(),
                   hint:Text(
-                    "Choose a cloth type",
+                    "Choose a Catolog",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 17,
@@ -378,7 +383,7 @@ class _DataInsertState extends State<DataInsert> {
                   ),
                   onChanged: (String value) {
                     setState(() {
-                      clothType = value;
+                      catalog = value;
                     });
                   },
                 ),
@@ -404,8 +409,8 @@ class _DataInsertState extends State<DataInsert> {
                   'Price': int.parse(priceEditor.text),
                   'Offer': double.parse(offerEditor.text),
                   'OldPrice': double.parse(oldPriceEditor.text),
-                  'Saree Type':sareeType,
-                  'Cloth Type':clothType,
+                  'Fabric':fabric,
+                  'Catalog':catalog,
                   'Time':uploadingTime,
                   'imageUrls': imageUrls
                 }

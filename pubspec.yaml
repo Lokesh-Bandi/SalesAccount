@@ -50,6 +50,7 @@ dependencies:
   geolocator: ^7.0.1
   geocoder: ^0.2.1
   getwidget: ^1.2.4
+  loading_animations: ^2.2.0
 
 dev_dependencies:
   flutter_test:

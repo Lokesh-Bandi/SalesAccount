@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:e_commerce/ProductDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce/MyBag.dart';
+import 'package:loading_animations/loading_animations.dart';
 // ignore: must_be_immutable
 class DisplayCard extends StatefulWidget {
   String productId;
@@ -112,7 +113,12 @@ class _DisplayCardState extends State<DisplayCard> {
                                     ),
                                   ),
                                   ),
-                                  placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                                  placeholder: (context, url) => Center(
+                                      child: LoadingBouncingGrid.circle(
+                                        size: 30,
+                                        backgroundColor: Color(0xfffca9e4),
+                                    )
+                                  ),
                                   errorWidget: (context, url, error) => Icon(Icons.error),
                                 ),
                               ),

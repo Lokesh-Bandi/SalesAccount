@@ -8,8 +8,8 @@ class DetailsTable extends StatelessWidget {
   int price;
   double oldPrice;
   double offer;
-  String sareeType='';
-  String clothType='';
+  String fabric='';
+  String catalog='';
   String sareeColor='';
   String blouseColor='';
   var updatedTime;
@@ -35,8 +35,8 @@ class DetailsTable extends StatelessWidget {
               oldPrice = eachDetail.get('OldPrice');
               sareeColor = eachDetail.get('Saree Color');
               blouseColor = eachDetail.get('Blouse Color');
-              sareeType = eachDetail.get('Saree Type');
-              clothType = eachDetail.get('Cloth Type');
+              fabric = eachDetail.get('Fabric');
+              catalog = eachDetail.get('Catalog');
               updatedTime = eachDetail.get('Time');
             }
           }
@@ -131,14 +131,14 @@ class DetailsTable extends StatelessWidget {
                   ),
                   DataRow(
                     cells: <DataCell>[
-                      DataCell(Text('Saree Type:',style: rowStyle)),
-                      DataCell(Text(sareeType,style: rowStyle)),
+                      DataCell(Text('Fabric:',style: rowStyle)),
+                      DataCell(Text(fabric,style: rowStyle)),
                     ],
                   ),
                   DataRow(
                     cells: <DataCell>[
-                      DataCell(Text('Cloth Type:',style: rowStyle)),
-                      DataCell(Text(clothType,style: rowStyle)),
+                      DataCell(Text('Catalog:',style: rowStyle)),
+                      DataCell(Text(catalog,style: rowStyle)),
                     ],
                   ),
                 ],
