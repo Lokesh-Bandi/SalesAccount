@@ -1,6 +1,8 @@
-import 'package:e_commerce/ProductList.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:loading_animations/loading_animations.dart';
+
 class HomeEditingCard extends StatelessWidget {
   var _firestore=FirebaseFirestore.instance;
   String screenName='';
@@ -62,11 +64,6 @@ class HomeEditingCard extends StatelessWidget {
               }
           );
         },
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (_) {
-            return ProductList(screenName: this.sareeType);
-          }));
-        },
         child: Card(
           elevation: 9,
           child: Container(
@@ -79,7 +76,6 @@ class HomeEditingCard extends StatelessWidget {
                 colors: [Colors.white24,
                   Colors.white54
                 ]
-
               )
             ),
             child: Row(
@@ -89,29 +85,31 @@ class HomeEditingCard extends StatelessWidget {
                   child: Container(
                     child: Column(children: [
                       Expanded(
-                        child: Image.network(
+                        child: CachedNetworkImage(
+                          imageUrl:
                           imageUrl,
-                          fit: BoxFit.fill,
-                          width: double.maxFinite,
-                          height: double.maxFinite,
-                          filterQuality: FilterQuality.medium,
-                          loadingBuilder: (BuildContext context,
-                              Widget child,
-                              ImageChunkEvent loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress
-                                    .expectedTotalBytes !=
-                                    null
-                                    ? loadingProgress
-                                    .cumulativeBytesLoaded /
-                                    loadingProgress
-                                        .expectedTotalBytes
-                                    : null,
+                          imageBuilder:
+                              (context, imageProvider) =>
+                              Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
                               ),
-                            );
-                          },
+                          placeholder: (context, url) =>
+                              Center(
+                                  child: LoadingFlipping
+                                      .square(
+                                    borderColor: Color(0xfffca9e4),
+                                    size: 30.0,
+                                    backgroundColor:
+                                    Color(0xfffca9e4),
+                                  )),
+                          errorWidget:
+                              (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                       ),
                     ])

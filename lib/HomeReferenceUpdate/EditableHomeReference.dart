@@ -1,9 +1,9 @@
-import 'package:e_commerce/HomeReferenceUpdate/InsertHomeReference.dart';
+import 'package:salesaccount/HomeReferenceUpdate/InsertHomeReference.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_commerce/HomeReferenceUpdate/HomeEditingCard.dart';
+import 'package:salesaccount/HomeReferenceUpdate/HomeEditingCard.dart';
 
-import '../InsertDeleteHomePage.dart';
+import 'InsertDeleteHomePage.dart';
 
 class EditableHomeReference extends StatefulWidget {
   @override

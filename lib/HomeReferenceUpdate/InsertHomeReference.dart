@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:e_commerce/ImageWidgetConstants.dart';
+import 'package:salesaccount/ImageWidgetConstants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 class InsertHomeReference extends StatefulWidget {

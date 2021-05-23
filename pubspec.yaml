@@ -1,5 +1,5 @@
-name: e_commerce
-description: A new Flutter application.
+name: salesaccount
+description: Salee account for e_commerce application
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -24,9 +24,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  razorpay_flutter: ^1.2.3
-  carousel_slider: ^4.0.0-nullsafety.0
-  photo_view: ^0.11.1
   image_picker: ^0.7.4
   flutter_image_compress: ^1.0.0
   firebase_core: ^1.0.3
@@ -42,13 +39,8 @@ dependencies:
   animated_text_kit: ^4.2.1
   image_cropper: ^1.4.0
   lottie: ^1.0.1
-  transparent_image: ^2.0.0
   badges: ^2.0.0-nullsafety.1
   flutter_plugin_android_lifecycle: ^2.0.1
-  google_maps_flutter: ^2.0.3
-  location: ^4.1.1
-  geolocator: ^7.0.1
-  geocoder: ^0.2.1
   getwidget: ^1.2.4
   loading_animations: ^2.2.0
 

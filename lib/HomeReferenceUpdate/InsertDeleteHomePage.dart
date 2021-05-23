@@ -1,7 +1,6 @@
-import 'package:e_commerce/DataInsert.dart';
-import 'package:e_commerce/HomeReferenceUpdate/EditableHomeReference.dart';
-import 'package:e_commerce/LoginScreen.dart';
-import 'package:e_commerce/main.dart';
+import 'file:///G:/SalesAccount/lib/HomeReferenceUpdate/DataInsert.dart';
+import 'package:salesaccount/HomeReferenceUpdate/EditableHomeReference.dart';
+import 'package:salesaccount/main.dart';
 import 'package:flutter/material.dart';
 class InsertDeleteHomePage extends StatefulWidget {
   @override
@@ -104,30 +103,6 @@ class _InsertDeleteHomePageState extends State<InsertDeleteHomePage> {
                 ),
               ),
             ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_){
-                      return LoginScreen();
-                    })
-                    );
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 230,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(
-                            colors: [Colors.white,Colors.greenAccent]
-                        )
-                    ),
-                    child: Center(child: Text("Login Edit",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),)),
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),

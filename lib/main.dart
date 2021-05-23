@@ -1,15 +1,12 @@
 import 'dart:async';
-import 'package:e_commerce/HomeReferenceUpdate/EditableHomeReference.dart';
-import 'package:e_commerce/LoginScreen.dart';
+import 'package:salesaccount/HomeReferenceUpdate/EditableHomeReference.dart';
+import 'package:salesaccount/HomeReferenceUpdate/InsertDeleteHomePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:e_commerce/InsertDeleteHomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:e_commerce/HomeReference.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:lottie/lottie.dart';
 
 bool alreadyVisited=false;
 
@@ -36,14 +33,16 @@ Future<void> main() async {
   await Firebase.initializeApp();
   SharedPreferences prefs= await SharedPreferences.getInstance();
   alreadyVisited=prefs.getBool('alreadyVisited');
-  runApp(MaterialApp(
+  runApp(
+      MaterialApp(
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: drawerColor,
         secondaryHeaderColor: Colors.blue,
           primaryColor: Color(0xfffca9e4)
       ),
-      home: SafeArea(child: (alreadyVisited!=null)?(HomePage()):(LoginScreen())))
+      home: SafeArea(child: HomePage())
+  )
   );
 }
 
@@ -115,57 +114,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-            backgroundColor: Theme.of(context).primaryColor,
-            title: Text(
-              "Home",
-              style: TextStyle(color: Colors.white),
-            )),
-        body: Builder(
-          builder: (context)=>Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: ListView(
-                children: [
-                  SizedBox(
-                    height: 50,
-                    width: double.maxFinite,
-                    child: RaisedButton(
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (_) {
-                          return HomeReference();
-                        }));
-                      },
-                      child: Text("Click"),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    width: double.maxFinite,
-                    child: RaisedButton(
-                      onPressed: (){
-                        //server.start();
-                        Navigator.push(context, MaterialPageRoute(builder: (_){
-                          return InsertDeleteHomePage();
-                        }));
-                      },
-                      child: Text("Insertion"),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(3, 5, 3, 5),
-                    height: 320,
-                    width: double.maxFinite,
-                    child: Card(
-                      elevation: 9,
-                    ),
-                  ),
-                ],
-              )
-          )
-          ,
-        )    );
+    return  InsertDeleteHomePage();
   }
 }
 
