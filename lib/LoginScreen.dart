@@ -190,25 +190,32 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Hero(
-                          tag: 'logo',
-                          child: Container(
-                            child: Image.asset('Images/India.jpg'),
-                            height: logoController.value * 70,
+                        Expanded(
+                          flex: 2,
+                          child: Hero(
+                            tag: 'logo',
+                            child: Container(
+                              child: Icon(
+                                Icons.shopping_bag_rounded,
+                                size: 40,
+                                color: Color(0xfffca9e4),
+                              ),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'New Arrival',
-                          style: TextStyle(
-                              fontSize: 35.0,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Lobster'),
+                        Expanded(
+                          flex: 8,
+                          child: Text(
+                            'Your Best',
+                            style: TextStyle(
+                              color: Color(0xfffca9e4),
+                                fontSize: 35.0,
+                                fontWeight: FontWeight.w900,
+                                fontFamily: 'Lobster'),
+                          ),
                         ),
                         Expanded(
+                          flex:4,
                           child: ScaleAnimatedTextKit(
                             text: ['Keep', 'Make', 'Fun'],
                             textStyle: TextStyle(
@@ -219,6 +226,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             //alignment: AlignmentDirectional.topStart
                           ),
                         ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+
                       ],
                     ),
                     //Name
@@ -265,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.lightBlueAccent, width: 1.0),
+                              BorderSide(color: Color(0xfffca9e4), width: 2.0),
                               borderRadius: BorderRadius.all(Radius.circular(32.0)),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -317,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.lightBlueAccent, width: 1.0),
+                              BorderSide(color: Color(0xfffca9e4), width: 2.0),
                               borderRadius: BorderRadius.all(Radius.circular(32.0)),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -374,7 +386,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.lightBlueAccent, width: 1.0),
+                              BorderSide(color: Color(0xfffca9e4), width: 2.0),
                               borderRadius: BorderRadius.all(Radius.circular(32.0)),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -390,7 +402,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Material(
-                        color: registerAnimation.value,
+                        color: Color(0xfffca9e4),
                         borderRadius: BorderRadius.circular(30.0),
                         elevation: 5.0,
                         child: MaterialButton (
@@ -505,7 +517,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         Padding(
           padding: const EdgeInsets.all(12.0),
           child: Container(
-            color: Colors.grey[200],
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.all(
+                        Radius.circular(30)
+              ),
+            ),
             child: ListTile(
               focusColor: Colors.grey,
               leading: GestureDetector(

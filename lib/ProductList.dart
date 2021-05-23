@@ -36,7 +36,7 @@ class _ProductListState extends State<ProductList> {
    void initState() {
     isLoading=true;
 
-    Future.delayed(Duration( seconds: 2),(){
+    Future.delayed(Duration( milliseconds: 1400),(){
       setState(() {
         isLoading=false;
       });

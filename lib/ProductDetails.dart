@@ -10,10 +10,9 @@ import 'package:badges/badges.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
-
-
 import 'DetailsTable.dart';
+
+
 class ProductDetails extends StatefulWidget {
   String productId;
   String productName;

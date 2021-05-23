@@ -12,6 +12,7 @@ import 'package:badges/badges.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomeReference extends StatefulWidget {
   @override
@@ -72,6 +73,7 @@ class _HomeReferenceState extends State<HomeReference> {
       fontSize: 28.0, fontFamily: 'EBGaramond', fontWeight: FontWeight.bold);
 
   var carouselOffer = 4000;
+  var screenLoading;
 
   void initState() {
     super.initState();
@@ -80,6 +82,14 @@ class _HomeReferenceState extends State<HomeReference> {
     setState(() {
       isLoading = true;
     });
+
+    screenLoading = true;
+    Future.delayed(Duration( milliseconds: 1400),(){
+      setState(() {
+        screenLoading=false;
+      });
+    });
+
     getSareeTypes();
     getPosition();
   }
@@ -282,284 +292,17 @@ class _HomeReferenceState extends State<HomeReference> {
         scrollDirection: Axis.horizontal,
         children: [
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: [
-                    //Top carousel
-                    GFCarousel(
-                      items: bgColors.map(
-                        (color) {
-                          return Container(
-                            padding: EdgeInsets.only(bottom: 12.0, top: 4.0),
-                            margin: EdgeInsets.all(12.0),
-                            child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      color: color,
-                                    ),
-                                    Positioned(
-                                      left: 20,
-                                      top: 25,
-                                      child: AnimatedTextKit(
-                                        animatedTexts: [
-                                          ColorizeAnimatedText(
-                                            'Cashback',
-                                            textStyle: colorizeTextStyle,
-                                            colors: colorizeColors,
-                                          ),
-                                        ],
-                                        isRepeatingAnimation: true,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 35,
-                                      left: 20,
-                                      right: 20,
-                                      child: DefaultTextStyle(
-                                        style: const TextStyle(
-                                            fontSize: 16.0,
-                                            fontFamily: 'EBGaramond',
-                                            fontWeight: FontWeight.bold,
-                                            fontStyle: FontStyle.italic,
-                                            color: Colors.black87),
-                                        child: AnimatedTextKit(
-                                          animatedTexts: [
-                                            TyperAnimatedText(
-                                                'Hurry up..!!! Cashback.... on purchase of Fancy Wear and Georgette Sarees'),
-                                          ],
-                                          isRepeatingAnimation: false,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 30,
-                                      right: 20,
-                                      child: DefaultTextStyle(
-                                        style: const TextStyle(
-                                            fontFamily: 'EBGaramond',
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
-                                            fontStyle: FontStyle.italic,
-                                            color: Colors.black87),
-                                        child: AnimatedTextKit(
-                                          animatedTexts: [
-                                            TyperAnimatedText(
-                                                'Upto ₹ $carouselOffer *'),
-                                          ],
-                                          isRepeatingAnimation: false,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          );
-                        },
-                      ).toList(),
-                      autoPlay: true,
-                      autoPlayInterval: Duration(seconds: 4),
-                      pauseAutoPlayOnTouch: Duration(seconds: 1),
-                      aspectRatio: (MediaQuery.of(context).orientation ==
-                              Orientation.landscape)
-                          ? 27 / 8
-                          : 15 / 8,
-                      viewportFraction: 1.0,
-                      enableInfiniteScroll: true,
-                      pagination: true,
-                      pagerSize: 8,
-                      passiveIndicator: Colors.grey,
-                      activeIndicator: Color(0xfffca9e4),
-                    ),
-
-                    //Today Stories
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 3.0, left: 12.0, right: 12.0, bottom: 0),
-                      child: SizedBox(
-                        child: Text(
-                          'Today Stories',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              letterSpacing: 2,
-                              color: Colors.black38,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
+              (screenLoading == false)
+                  ? homePage1(context)
+                  : Center(
+                    child: LoadingBouncingGrid.circle(
+                        size: 70,
+                        backgroundColor: Color(0xfffca9e4),
+                        borderSize: 10,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 12.0),
-                      child: SizedBox(
-                        width: 250,
-                        child: Divider(
-                          thickness: 2,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2.0, horizontal: 12.0),
-                      child: Container(
-                        height: 80,
-                        child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            itemCount: todayStories.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                child: ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100)),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.fill,
-                                      width: 80,
-                                      imageUrl: todayStories[index],
-                                      placeholder: (context, url) => Center(
-                                          child: CircularProgressIndicator()),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    )),
-                              );
-                            }),
-                      ),
-                    ),
-
-                    //New Arrivals
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20.0, left: 12.0, right: 12.0, bottom: 0),
-                      child: SizedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'New Arrivals',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  letterSpacing: 2,
-                                  color: Colors.black38,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                            Text(
-                              'More ➜',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  letterSpacing: 1,
-                                  color: Color(0xffFCA9E4),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 0, left: 12.0, right: 12.0, bottom: 0),
-                      child: SizedBox(
-                        width: 250,
-                        child: Divider(
-                          thickness: 2,
-                        ),
-                      ),
-                    ),
-                    GFItemsCarousel(
-                      rowCount: 4,
-                      itemHeight: 105,
-                      children: newArrivals.map(
-                        (url) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 6.0),
-                            child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  width: 80,
-                                  imageUrl: url,
-                                  placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator()),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                )),
-                          );
-                        },
-                      ).toList(),
-                    ),
-
-                    //Top rated
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20.0, left: 12.0, right: 12.0, bottom: 0),
-                      child: SizedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Top Rated',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  letterSpacing: 2,
-                                  color: Colors.black38,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                            Text(
-                              'More ➜',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  letterSpacing: 1,
-                                  color: Color(0xfffca9e4),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 12.0),
-                      child: SizedBox(
-                        width: 250,
-                        child: Divider(
-                          thickness: 2,
-                        ),
-                      ),
-                    ),
-                    GFItemsCarousel(
-                      rowCount: 3,
-                      itemHeight: 150,
-                      children: topRated.map(
-                        (url) {
-                          return Container(
-                            margin: EdgeInsets.all(5.0),
-                            child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  width: 80,
-                                  imageUrl: url,
-                                  placeholder: (context, url) => Center(
-                                      child: CircularProgressIndicator()),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                )),
-                          );
-                        },
-                      ).toList(),
-                    )
-                  ],
-                ),
-              ),
+                  ),
             ],
           ),
           Container(
@@ -651,13 +394,15 @@ class _HomeReferenceState extends State<HomeReference> {
                                                   ),
                                                 ),
                                               ),
-                                              placeholder: (context, url) => Center(
-                                                  child:
-                                                      LoadingFlipping.square(
-                                                        borderColor: Color(0xfffca9e4),
-                                                        size: 30.0,
-                                                        backgroundColor: Color(0xfffca9e4),
-                                                      )),
+                                              placeholder: (context, url) =>
+                                                  Center(
+                                                      child: LoadingFlipping
+                                                          .square(
+                                                borderColor: Color(0xfffca9e4),
+                                                size: 30.0,
+                                                backgroundColor:
+                                                    Color(0xfffca9e4),
+                                              )),
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
@@ -698,6 +443,291 @@ class _HomeReferenceState extends State<HomeReference> {
                 ),
               ],
             ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Expanded homePage1(BuildContext context) {
+    return Expanded(
+      child: ListView(
+        physics: BouncingScrollPhysics(),
+        children: [
+          //Top carousel
+          GFCarousel(
+            items: bgColors.map(
+              (color) {
+                return Container(
+                  padding: EdgeInsets.only(bottom: 12.0, top: 4.0),
+                  margin: EdgeInsets.all(12.0),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      child: Stack(
+                        children: [
+                          Container(
+                            color: color,
+                          ),
+                          Positioned(
+                            left: 20,
+                            top: 25,
+                            child: AnimatedTextKit(
+                              animatedTexts: [
+                                ColorizeAnimatedText(
+                                  'Cashback',
+                                  textStyle: colorizeTextStyle,
+                                  colors: colorizeColors,
+                                ),
+                              ],
+                              isRepeatingAnimation: true,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 35,
+                            left: 20,
+                            right: 20,
+                            child: DefaultTextStyle(
+                              style: const TextStyle(
+                                  fontSize: 16.0,
+                                  fontFamily: 'EBGaramond',
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.black87),
+                              child: AnimatedTextKit(
+                                animatedTexts: [
+                                  TyperAnimatedText(
+                                      'Hurry up..!!! Cashback.... on purchase of Fancy Wear and Georgette Sarees'),
+                                ],
+                                isRepeatingAnimation: false,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 30,
+                            right: 20,
+                            child: DefaultTextStyle(
+                              style: const TextStyle(
+                                  fontFamily: 'EBGaramond',
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.black87),
+                              child: AnimatedTextKit(
+                                animatedTexts: [
+                                  TyperAnimatedText('Upto ₹ $carouselOffer *'),
+                                ],
+                                isRepeatingAnimation: false,
+                              ),
+                            ),
+                          )
+                        ],
+                      )),
+                );
+              },
+            ).toList(),
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 4),
+            pauseAutoPlayOnTouch: Duration(seconds: 1),
+            aspectRatio:
+                (MediaQuery.of(context).orientation == Orientation.landscape)
+                    ? 27 / 8
+                    : 15 / 8,
+            viewportFraction: 1.0,
+            enableInfiniteScroll: true,
+            pagination: true,
+            pagerSize: 8,
+            passiveIndicator: Colors.grey,
+            activeIndicator: Color(0xfffca9e4),
+          ),
+
+          //Today Stories
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 3.0, left: 12.0, right: 12.0, bottom: 0),
+            child: SizedBox(
+              child: Text(
+                'Today Stories',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    letterSpacing: 2,
+                    color: Colors.black38,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12.0),
+            child: SizedBox(
+              width: 250,
+              child: Divider(
+                thickness: 2,
+              ),
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 2.0, horizontal: 12.0),
+            child: Container(
+              height: 80,
+              child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: todayStories.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          child: CachedNetworkImage(
+                            fit: BoxFit.fill,
+                            width: 80,
+                            imageUrl: todayStories[index],
+                            placeholder: (context, url) => Center(
+                                child: LoadingFlipping.circle(
+                              borderColor: Color(0xfffca9e4),
+                              size: 60.0,
+                              backgroundColor: Color(0xfffca9e4),
+                            )),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          )),
+                    );
+                  }),
+            ),
+          ),
+
+          //New Arrivals
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 20.0, left: 12.0, right: 12.0, bottom: 0),
+            child: SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'New Arrivals',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        letterSpacing: 2,
+                        color: Colors.black38,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  ),
+                  Text(
+                    'More ➜',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        letterSpacing: 1,
+                        color: Color(0xffFCA9E4),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 0, left: 12.0, right: 12.0, bottom: 0),
+            child: SizedBox(
+              width: 250,
+              child: Divider(
+                thickness: 2,
+              ),
+            ),
+          ),
+          GFItemsCarousel(
+            rowCount: 4,
+            itemHeight: 105,
+            children: newArrivals.map(
+              (url) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 6.0),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        width: 80,
+                        imageUrl: url,
+                        placeholder: (context, url) => Center(
+                          child: LoadingBouncingGrid.circle(
+                            size: 30,
+                            backgroundColor: Color(0xfffca9e4),
+                            borderSize: 10,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      )),
+                );
+              },
+            ).toList(),
+          ),
+
+          //Top rated
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 20.0, left: 12.0, right: 12.0, bottom: 0),
+            child: SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Top Rated',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        letterSpacing: 2,
+                        color: Colors.black38,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  ),
+                  Text(
+                    'More ➜',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        letterSpacing: 1,
+                        color: Color(0xfffca9e4),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12.0),
+            child: SizedBox(
+              width: 250,
+              child: Divider(
+                thickness: 2,
+              ),
+            ),
+          ),
+          GFItemsCarousel(
+            rowCount: 3,
+            itemHeight: 150,
+            children: topRated.map(
+              (url) {
+                return Container(
+                  margin: EdgeInsets.all(5.0),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        width: 80,
+                        imageUrl: url,
+                        placeholder: (context, url) => Center(
+                          child: LoadingBouncingGrid.circle(
+                            size: 30,
+                            backgroundColor: Color(0xfffca9e4),
+                            borderSize: 10,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      )),
+                );
+              },
+            ).toList(),
           )
         ],
       ),
